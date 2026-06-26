@@ -1,0 +1,109 @@
+version: "1.0.0"
+default_output_dir: "svg_shape_safe"
+canvas:
+  default_width: 2400
+  default_height: 1350
+style:
+  primary: "#5A0FB4"
+  dark: "#3A0078"
+  bright: "#8E35E8"
+  light: "#B98BE8"
+  pale: "#F8F2FF"
+icon_policy:
+  reduce_decorative_icons: true
+  default_max_meaningful_icons: 5
+  ask_user_threshold_total_icons: 8
+  over_iconized_threshold_total_icons: 12
+  allow_more_for_module_overviews: true
+  user_choices:
+    - preserve
+    - balanced
+    - minimal
+  replacements:
+    - numbered_circle
+    - small_dot
+    - rounded_pill
+    - color_chip
+    - status_badge
+    - simple_button_shape
+preflight:
+  required: true
+  classify_complexity_before_reconstruction: true
+  ask_user_before_major_restyle: true
+  ask_user_before_more_than_visual_calls: 3
+  complexity_levels:
+    simple:
+      visual_model_calls: 1
+      preview_checks: 1
+    medium:
+      visual_model_calls: 1
+      optional_preview_check_call: true
+      preview_checks: 1
+    complex:
+      visual_model_calls: 2
+      preview_checks: 1
+    very_complex:
+      ask_user_for_priority: true
+      priorities:
+        - fidelity
+        - editability
+        - executive_simplification
+merge_layout_policy:
+  ask_user_when_structure_changes: true
+  default_strategy: "recommended_optimization"
+  strategies:
+    - preserve_original
+    - light_unification
+    - recommended_optimization
+    - executive_simplification
+    - template_adaptation
+deck_consistency:
+  enabled: true
+  style_anchor_required_for_batches: true
+  compare_each_page_to_previous: true
+  dominant_message_per_page: true
+  style_controls:
+    - palette
+    - typography_scale
+    - icon_treatment
+    - card_radius
+    - spacing
+text:
+  font_family: "Microsoft YaHei, Noto Sans SC, Arial, sans-serif"
+  use_tspan: false
+  one_text_node_per_line: true
+  explanatory_blocks:
+    enabled: true
+    use_multiline_text_box: true
+    role_attribute: "data-text-role=\"explanatory-block\""
+    allowed_tspan_exception: true
+    preferred_font_sizes:
+      - 16
+      - 14
+      - 12
+    max_font_size_delta_within_block: 1
+    line_height_ratio_min: 1.25
+    line_height_ratio_max: 1.45
+    merge_when:
+      - same_card_or_section
+      - same_font_size_weight_fill
+      - same_alignment
+      - adjacent_supporting_lines
+      - same_paragraph_or_bullet_group
+    split_when:
+      - title_or_kpi_or_label
+      - different_font_size_weight_fill
+      - different_semantic_role
+      - crosses_card_column_divider_or_flow_step
+      - independently_positioned_legend_or_chip
+office_shape_safe:
+  allow_image: false
+  allow_foreign_object: false
+  allow_transform: false
+  allow_marker: false
+  allow_data_icon: false
+  allow_tspan: false
+  allow_explanatory_tspan_exception: true
+batch:
+  recommended_max_pages: 4
+  preserve_user_fixed_outputs: true

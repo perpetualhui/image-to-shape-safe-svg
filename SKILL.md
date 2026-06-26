@@ -1,0 +1,210 @@
+---
+name: image-to-shape-safe-svg
+description: Convert slide-like images, screenshots, flowcharts, business diagrams, or infographic PNG/JPG pages into Office/PPT shape-safe editable SVG. Use when the user wants image-to-SVG reconstruction, editable icons/arrows/text, batch conversion, web-compatible SVG output, or SVGs that survive PowerPoint "convert to shapes" without losing icons, arrows, or text layout.
+metadata:
+  short-description: Image to editable shape-safe SVG
+---
+
+# Image To Shape-Safe SVG
+
+Use this skill to reconstruct slide-like raster images into editable, Office-safe SVGs. The goal is not bitmap tracing. The goal is a structured SVG made from text, paths, lines, polygons, icons, and simple shapes that can later be edited or converted to shapes without losing content.
+
+Default aesthetic bias: reduce decorative icons. Use icons only when they clarify the content hierarchy. For secondary or repetitive items, prefer numbered circles, small dots, rounded pills, color chips, status badges, or simple button-like shapes with a restrained palette.
+
+Default autonomy rule: when a conversion would materially change the source design, especially by reducing many icons, merging crowded pages, or splitting/reflowing content, pause before final shape conversion and give the user a small set of choices.
+
+## Output Contract
+
+Deliver final SVGs in a folder named `svg_shape_safe` unless the user specifies another output folder.
+
+Hard validation targets for every delivered SVG:
+
+- `image = 0`
+- `data_icon = 0`
+- `transform = 0`
+- `marker_end = 0`
+- `marker_defs = 0`
+- `tspan = 0`, except approved explanatory small-text blocks marked with `data-text-role="explanatory-block"`
+- `foreign_object = 0`
+
+Practical meaning:
+
+- Do not embed the source image or full-page screenshots.
+- Expand icon placeholders into real SVG paths before delivery.
+- Bake arrowheads as polygons, not SVG markers.
+- Use independent single-line `<text x y>...</text>` nodes for titles, numbers, labels, and short callouts.
+- For explanatory small text where several adjacent lines share the same font size, weight, fill, and paragraph meaning, use one multi-line text block so it remains easier to edit in PPT. Mark it with `data-text-role="explanatory-block"` and keep `tspan` use limited to that block.
+- Avoid transforms; place each shape with absolute coordinates.
+
+In validation reports, `tspan` means disallowed tspan count. Approved explanatory small-text lines are reported separately as `explanatory_tspan`.
+
+## When To Use Which Reference
+
+- For local desktop/batch work, read `references/local-batch-workflow.md`.
+- For browser/web-app workflows, read `references/web-workflow.md`.
+- For layout/icon/arrow pitfalls, read `docs/troubleshooting.md`.
+- For maps, geography, coverage diagrams, or dense polygon assets, read `docs/map-complexity-policy.md` before reconstruction.
+- For automated checks, use `tools/validate_shape_safe_svg.py`.
+
+## Recommended Workflow
+
+1. Inspect the source image dimensions and composition.
+2. Create a short preflight plan: complexity level, estimated icon count, text density, risky regions, layout strategy, and visual-model call budget.
+3. If icon count is high or icon reduction would change the look, ask the user to choose before final shape conversion: preserve icons, reduce to essential icons, or replace minor icons with badges/markers.
+4. Rebuild the page structurally: title, subtitle, sections, cards, flows, arrows, side panels, footer.
+5. If the page contains a map or dense geographic outline, treat it as a complex polygon asset: place a simple editable placeholder first, finish the rest of the page, and handle the map last.
+6. Decide whether each icon is necessary. Keep only icons that represent primary modules, major conclusions, or high-level categories; replace decorative or repetitive icons with dots, numbered circles, pills, color chips, or badges.
+7. Draw arrows as lines or paths plus baked polygon arrowheads.
+8. Place structural text as separate single-line SVG text nodes. Group explanatory small text into one multi-line text block when the lines share the same style and belong to the same paragraph/list.
+9. Generate intermediate SVGs only if needed, then produce final `svg_shape_safe`.
+10. Validate hard metrics.
+11. Render previews and visually inspect for text overlap, missing necessary icons, over-iconized pages, missing arrowheads, map overflow, and layout drift.
+
+## Reconstruction Rules
+
+- Prefer simple primitives: `rect`, `circle`, `line`, `path`, `polygon`, `text`.
+- Use explicit coordinates; avoid `g transform`, `scale`, `translate`, and nested transformed groups.
+- Prefer visual fidelity for structure, spacing, color, and hierarchy over pixel-perfect tracing.
+- Keep text shorter or split lines when needed. Text stability after Office conversion is more important than matching exact source line breaks.
+- For headings, KPI numbers, labels, short chips, and independent bullets, use one text node per visual line.
+- For explanatory small text, merge adjacent same-style lines into one editable multi-line text block. This is preferred for 12, 14, and 16 px body/explanation text when the lines are a paragraph, note, bullet group, or supporting description.
+- Use a small, deliberate icon budget. A typical business slide should have about 3-5 meaningful icons, not one icon for every bullet. Dense module overview pages may use more, but repeated icons should be simplified into badges or markers.
+- Match icons from a stable SVG icon library, preferably Tabler/Office-like outline icons, only when an icon improves comprehension. Do not embed icon images.
+- Prefer symbolic shape replacements for minor items: numbered circles for steps, small filled circles for bullet groups, rounded pills for statuses, color chips for categories, and compact badges for "standardized", "automated", "traceable", or similar labels.
+- Use color semantically. Keep a primary brand color, one accent color, and neutral grays unless the source page already uses a richer but meaningful palette.
+- Treat tiny connector arrows as high-risk. Draw them explicitly and validate them in preview.
+- Treat maps, coastlines, country borders, and dense coverage regions as high-risk complex polygons. Default to an abstract network/coverage placeholder unless the map is the main subject.
+- Do not spend the first reconstruction pass tracing a world map. Build the editable slide structure first, then decide whether the map needs a simplified outline, an abstract replacement, or a separately sourced simplified asset.
+
+## Text Grouping For Explanatory Small Text
+
+Explanatory small text means supporting copy that is visually subordinate to a title, KPI, step label, card heading, or section heading. It often appears as two or more short lines with similar size, weight, color, and line spacing.
+
+Default behavior:
+
+- Merge explanatory lines into one logical text box when they share the same font size, weight, fill, alignment, and semantic group.
+- Prefer body sizes 16, 14, and 12. If the source uses smaller text, reduce only as needed, but keep each merged block internally consistent.
+- Keep line height about `1.25-1.45 * font-size`, with a little extra space for dense Chinese.
+- Use separate text boxes when font size, weight, color, indentation, or semantic role changes.
+- Do not merge across card boundaries, column boundaries, dividers, flow steps, or unrelated bullet groups.
+- Keep each explanatory block to a readable size. If a block would become a dense paragraph that is hard to select or align, split it by semantic paragraph rather than by every visual line.
+
+SVG pattern:
+
+```xml
+<text x="640" y="420" font-family="Microsoft YaHei, Noto Sans SC, Arial, sans-serif" font-size="14" fill="#333" data-text-role="explanatory-block">
+  <tspan x="640" dy="0">第一行解释文字</tspan>
+  <tspan x="640" dy="19">第二行解释文字</tspan>
+  <tspan x="640" dy="19">第三行解释文字</tspan>
+</text>
+```
+
+Use this exception only for explanatory small text. Do not use `tspan` for icons, headings, KPI numbers, legends that need separate positioning, or text that should remain independently selectable.
+
+## Preflight Complexity And Vision Budget
+
+Before reconstructing, classify the image. This prevents over-spending effort on low-value details and makes high-risk conversions explicit.
+
+- Simple: title, few blocks, low text density, no dense icons or map. Use one visual read plus one rendered preview inspection.
+- Medium: several cards, flow arrows, charts, or moderate Chinese text. Use one visual read, one layout reconstruction pass, and one preview comparison.
+- Complex: dense infographic, many icons, several nested panels, small text, dashboard-style layout, map/network, or multiple flow branches. Use an initial visual read, a focused second read for risky regions, and a final preview comparison.
+- Very complex: tiny text everywhere, heavy screenshots, dense maps, complicated tables, or icon count so high that editability conflicts with fidelity. Ask the user whether to prioritize fidelity, editability, or executive simplification before final conversion.
+
+Suggested visual-model call budget when a vision model is available:
+
+- Simple: 1 source analysis call.
+- Medium: 1 source analysis call plus 1 preview/layout check if needed.
+- Complex: 2 source/risky-region calls plus 1 preview/layout check.
+- Very complex: ask before using more than 3 calls or before doing a major restyle.
+
+The preflight summary should be short and actionable. Include:
+
+- Complexity level.
+- Estimated meaningful icon count and decorative icon count.
+- Text density risk.
+- Layout strategy.
+- Whether user choice is needed before reducing icons, splitting pages, or applying a merge/restyle strategy.
+
+## Icon Economy
+
+Before drawing icons, classify each visual marker:
+
+- Primary icon: keep it if it names a major section, module, capability, risk, or conclusion.
+- Repeated category marker: usually convert it into a numbered circle, color chip, or simple badge.
+- Bullet decoration: remove it or replace it with a small dot.
+- Tiny icon inside dense text: remove it unless the source relies on it for meaning.
+
+Avoid generating many icons just because the original image contains many small visual decorations. Too many editable icons make the PPT harder to read, slower to edit, and more fragile after PowerPoint conversion.
+
+If the source appears over-iconized, ask before converting to final shapes. Offer no more than three clear choices:
+
+- Preserve: keep most icons for source fidelity.
+- Balanced: keep only section/module icons and convert minor icons to badges or markers.
+- Minimal: remove most decorative icons and use typography, spacing, and color blocks instead.
+
+Good substitutions:
+
+- Step cards: numbered circles instead of unique icons.
+- Status lists: rounded pills or check badges instead of repeated icons.
+- Category legends: color chips and short labels instead of icon sets.
+- Dense financial or operational notes: text hierarchy, dividers, and spacing instead of icons.
+
+## Layout Judgment For PPT Merge Or Restyle
+
+When a request involves merging, restyling, or converting multiple pages into a PPT-like deck, do not blindly preserve every original layout. Prefer a user-facing choice when the conversion would meaningfully change structure:
+
+- Preserve original: keep the source layout, only fix fonts, alignment, validation issues, and shape safety.
+- Light unification: keep each page's structure but unify title style, margins, colors, icon style, and footer/header treatment.
+- Recommended optimization: preserve the main message while reducing decorative icons, improving spacing, simplifying dense regions, and replacing minor icons with badges or markers.
+- Executive simplification: split or compress crowded pages so each slide has one main point, key numbers, and only essential visuals.
+- Template adaptation: fit content into a provided master/template and discard source layouts that conflict with the template grid.
+
+Keep layouts that have clear hierarchy, readable text, stable grids, meaningful color, and one dominant message. Discard or rewrite layouts that are crowded, over-iconized, full of nested cards, mixed icon styles, arbitrary colors, or tiny text that will not survive PPT editing.
+
+Lessons borrowed from presentation-generation workflows:
+
+- Start with a plan, not shapes: decide slide purpose, hierarchy, style rules, and risk areas before drawing.
+- Maintain style consistency across a batch: color palette, typography scale, icon treatment, card radius, and spacing should be stable.
+- Do not batch style-critical reconstruction blindly. For pages that should belong to one deck, use the previous finished page as a style reference for the next page.
+- Be specific about design rules: exact palette, font scale, spacing, and visual substitutions produce more consistent results than vague "make it professional" instructions.
+- Limit each slide to one dominant message when restyling is allowed.
+
+## Deck Consistency For Batches
+
+When multiple pages should feel like one deck or one shared system:
+
+- Define a style anchor page first. Use it to lock the palette, font scale, icon treatment, card radius, and spacing for the batch.
+- Reuse the immediately previous finished page as the reference for the next page instead of re-deciding style from scratch.
+- Keep each page to one dominant message and one focal hierarchy. If a page has multiple competing points, split or simplify before conversion.
+- If a later page drifts away from the established system, pause and realign rather than forcing the whole batch forward.
+- For style-critical pages, avoid blind bulk reconstruction; do the batch sequentially and compare each page against the anchor and the previous page.
+
+## Naming
+
+Use readable English slugs:
+
+```text
+01_non_merchandise_smart_operations_closed_loop.svg
+12_ai_expense_implementation_roadmap.svg
+13_intelligent_expense_management_platform.svg
+```
+
+For revised versions, append `_v2`, `_v3`, etc. rather than overwriting user-fixed files.
+
+## Batch Size Guidance
+
+For high-quality manual reconstruction:
+
+- 3 pages per batch is comfortable for dense business diagrams.
+- 4 pages per batch is acceptable when layouts are similar.
+- 5+ pages should be split unless the user prioritizes speed over review quality.
+
+## Verification
+
+Run:
+
+```bash
+python tools/validate_shape_safe_svg.py path/to/svg_shape_safe
+```
+
+Then render previews with a browser or SVG renderer. A green validator report is necessary but not sufficient; always inspect the preview.

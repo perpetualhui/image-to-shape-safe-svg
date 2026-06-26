@@ -1,0 +1,8 @@
+interface:
+  display_name: "Image To Shape-Safe SVG"
+  short_description: "Rebuild images as editable Office-safe SVGs."
+  brand_color: "#5A0FB4"
+  default_prompt: "Use $image-to-shape-safe-svg to convert these slide screenshots into editable shape-safe SVG files."
+
+policy:
+  allow_implicit_invocation: true
