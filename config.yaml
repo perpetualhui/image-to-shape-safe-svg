@@ -10,6 +10,9 @@ style:
   light: "#B98BE8"
   pale: "#F8F2FF"
 icon_policy:
+  bundled_icon_library: "assets/icons/shape_safe_icon_library.json"
+  semantic_icon_map: "assets/icons/semantic_icon_map.json"
+  icon_matcher_tool: "tools/match_shape_safe_icon.py"
   reduce_decorative_icons: true
   default_max_meaningful_icons: 5
   ask_user_threshold_total_icons: 8

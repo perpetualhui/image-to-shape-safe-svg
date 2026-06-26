@@ -1,0 +1,128 @@
+{
+  "version": "1.0.0",
+  "coordinate_system": "24x24",
+  "stroke_width": 1.8,
+  "style": "simple-outline",
+  "license": "MIT",
+  "icons": {
+    "workflow": {
+      "tags": ["workflow", "process", "flow", "pipeline", "step", "流程", "工作流", "プロセス"],
+      "elements": [
+        {"type": "rect", "x": 3, "y": 4, "width": 6, "height": 5, "rx": 1.2},
+        {"type": "rect", "x": 15, "y": 4, "width": 6, "height": 5, "rx": 1.2},
+        {"type": "rect", "x": 9, "y": 15, "width": 6, "height": 5, "rx": 1.2},
+        {"type": "line", "x1": 9, "y1": 6.5, "x2": 15, "y2": 6.5},
+        {"type": "line", "x1": 12, "y1": 9, "x2": 12, "y2": 15}
+      ]
+    },
+    "automation": {
+      "tags": ["automation", "automated", "robot", "ai", "agent", "自动化", "智能", "自動化"],
+      "elements": [
+        {"type": "rect", "x": 5, "y": 7, "width": 14, "height": 11, "rx": 2},
+        {"type": "line", "x1": 12, "y1": 4, "x2": 12, "y2": 7},
+        {"type": "circle", "cx": 9, "cy": 12, "r": 1},
+        {"type": "circle", "cx": 15, "cy": 12, "r": 1},
+        {"type": "line", "x1": 9, "y1": 15.5, "x2": 15, "y2": 15.5}
+      ]
+    },
+    "data": {
+      "tags": ["data", "database", "dataset", "storage", "数据", "数据库", "データ"],
+      "elements": [
+        {"type": "ellipse", "cx": 12, "cy": 6, "rx": 7, "ry": 3},
+        {"type": "path_polyline", "points": [[5, 6], [5, 12], [5, 18]]},
+        {"type": "path_polyline", "points": [[19, 6], [19, 12], [19, 18]]},
+        {"type": "ellipse", "cx": 12, "cy": 12, "rx": 7, "ry": 3},
+        {"type": "ellipse", "cx": 12, "cy": 18, "rx": 7, "ry": 3}
+      ]
+    },
+    "analytics": {
+      "tags": ["analytics", "chart", "metrics", "kpi", "report", "分析", "指标", "レポート"],
+      "elements": [
+        {"type": "line", "x1": 5, "y1": 19, "x2": 20, "y2": 19},
+        {"type": "line", "x1": 5, "y1": 19, "x2": 5, "y2": 5},
+        {"type": "rect", "x": 7, "y": 13, "width": 2.8, "height": 6, "rx": 0.5},
+        {"type": "rect", "x": 11, "y": 9, "width": 2.8, "height": 10, "rx": 0.5},
+        {"type": "rect", "x": 15, "y": 6, "width": 2.8, "height": 13, "rx": 0.5}
+      ]
+    },
+    "security": {
+      "tags": ["security", "secure", "privacy", "compliance", "safe", "安全", "合规", "セキュリティ"],
+      "elements": [
+        {"type": "polygon", "points": [[12, 4], [19, 7], [18, 14], [12, 20], [6, 14], [5, 7]]},
+        {"type": "polyline", "points": [[8.5, 12], [11, 14.5], [16, 9.5]]}
+      ]
+    },
+    "risk": {
+      "tags": ["risk", "warning", "alert", "issue", "problem", "风险", "告警", "リスク"],
+      "elements": [
+        {"type": "polygon", "points": [[12, 4], [21, 20], [3, 20]]},
+        {"type": "line", "x1": 12, "y1": 9, "x2": 12, "y2": 14},
+        {"type": "circle", "cx": 12, "cy": 17, "r": 0.7}
+      ]
+    },
+    "cloud": {
+      "tags": ["cloud", "saas", "platform", "server", "云", "平台", "クラウド"],
+      "elements": [
+        {"type": "path_polyline", "points": [[7, 17], [17, 17]]},
+        {"type": "circle", "cx": 8, "cy": 14, "r": 3},
+        {"type": "circle", "cx": 13, "cy": 11, "r": 4},
+        {"type": "circle", "cx": 17, "cy": 14, "r": 3}
+      ]
+    },
+    "user": {
+      "tags": ["user", "customer", "person", "employee", "用户", "客户", "ユーザー"],
+      "elements": [
+        {"type": "circle", "cx": 12, "cy": 8, "r": 3.2},
+        {"type": "path_polyline", "points": [[5, 20], [7, 15], [12, 13.5], [17, 15], [19, 20]]}
+      ]
+    },
+    "team": {
+      "tags": ["team", "organization", "people", "collaboration", "团队", "组织", "チーム"],
+      "elements": [
+        {"type": "circle", "cx": 12, "cy": 8, "r": 2.8},
+        {"type": "circle", "cx": 6.5, "cy": 10, "r": 2.2},
+        {"type": "circle", "cx": 17.5, "cy": 10, "r": 2.2},
+        {"type": "path_polyline", "points": [[4, 20], [6, 15.5], [12, 14], [18, 15.5], [20, 20]]}
+      ]
+    },
+    "document": {
+      "tags": ["document", "file", "paper", "policy", "文档", "文件", "ドキュメント"],
+      "elements": [
+        {"type": "path_polyline", "points": [[7, 3], [15, 3], [19, 7], [19, 21], [7, 21], [7, 3]]},
+        {"type": "polyline", "points": [[15, 3], [15, 7], [19, 7]]},
+        {"type": "line", "x1": 10, "y1": 12, "x2": 16, "y2": 12},
+        {"type": "line", "x1": 10, "y1": 16, "x2": 16, "y2": 16}
+      ]
+    },
+    "check": {
+      "tags": ["check", "success", "done", "approved", "完成", "通过", "成功", "完了"],
+      "elements": [
+        {"type": "circle", "cx": 12, "cy": 12, "r": 8},
+        {"type": "polyline", "points": [[8, 12.5], [11, 15.5], [16.5, 9]]}
+      ]
+    },
+    "settings": {
+      "tags": ["settings", "configuration", "control", "system", "配置", "设置", "設定"],
+      "elements": [
+        {"type": "circle", "cx": 12, "cy": 12, "r": 3},
+        {"type": "line", "x1": 12, "y1": 4, "x2": 12, "y2": 7},
+        {"type": "line", "x1": 12, "y1": 17, "x2": 12, "y2": 20},
+        {"type": "line", "x1": 4, "y1": 12, "x2": 7, "y2": 12},
+        {"type": "line", "x1": 17, "y1": 12, "x2": 20, "y2": 12},
+        {"type": "line", "x1": 6.3, "y1": 6.3, "x2": 8.4, "y2": 8.4},
+        {"type": "line", "x1": 15.6, "y1": 15.6, "x2": 17.7, "y2": 17.7},
+        {"type": "line", "x1": 17.7, "y1": 6.3, "x2": 15.6, "y2": 8.4},
+        {"type": "line", "x1": 8.4, "y1": 15.6, "x2": 6.3, "y2": 17.7}
+      ]
+    },
+    "integration": {
+      "tags": ["integration", "connect", "api", "link", "集成", "连接", "連携"],
+      "elements": [
+        {"type": "circle", "cx": 7, "cy": 12, "r": 3},
+        {"type": "circle", "cx": 17, "cy": 12, "r": 3},
+        {"type": "line", "x1": 10, "y1": 12, "x2": 14, "y2": 12},
+        {"type": "line", "x1": 12, "y1": 8, "x2": 12, "y2": 16}
+      ]
+    }
+  }
+}

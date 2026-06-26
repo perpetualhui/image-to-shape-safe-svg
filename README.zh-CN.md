@@ -14,6 +14,7 @@
 - 将箭头头部烘焙为 polygon，降低 Office 转换后丢失箭头的风险。
 - 尽量保持文本为独立 SVG text 节点，方便后续编辑。
 - 对说明性小段文字允许有限的多行文本块，并用 `data-text-role="explanatory-block"` 标记。
+- 内置语义图标库和自动关键词匹配工具，可按 automation、data、risk、workflow、数据、自动化、风险等语义匹配可编辑 SVG primitives。
 - 默认减少装饰性图标，优先用编号圆点、普通圆点、胶囊标签、色块和状态徽章替代重复小图标。
 
 ## 输出要求
@@ -43,7 +44,10 @@ svg_shape_safe/
 |-- SKILL.md
 |-- config.yaml
 |-- agents/
+|-- assets/
+|   `-- icons/
 |-- docs/
+|   |-- icon-matching.md
 |   |-- map-complexity-policy.md
 |   `-- troubleshooting.md
 |-- examples/
@@ -55,6 +59,7 @@ svg_shape_safe/
 |-- tests/
 |   `-- test_validate_shape_safe_svg.py
 `-- tools/
+    |-- match_shape_safe_icon.py
     `-- validate_shape_safe_svg.py
 ```
 
@@ -101,6 +106,14 @@ Only deliver svg_shape_safe. Make sure icons and arrowheads survive PowerPoint c
 使用 $image-to-shape-safe-svg 处理这 5 张仪表盘截图。
 先选一页作为样式锚点，统一颜色、字号、卡片圆角和间距。最终只交付通过验证的 svg_shape_safe。
 ```
+
+图标自动匹配：
+
+```powershell
+py tools\match_shape_safe_icon.py "自动化审批流程" --x 120 --y 80 --size 48 --color "#5A0FB4"
+```
+
+这会从内置图标库输出已展开的 SVG primitives，不会生成 `<image>`、`transform`、`marker`、`foreignObject` 或 `data-icon`。
 
 本地批处理工作流见：
 

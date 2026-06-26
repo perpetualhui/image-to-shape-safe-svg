@@ -14,6 +14,7 @@ This is a Codex skill for reconstructing visual documents structurally. It does 
 - Bakes arrowheads as polygons so connectors survive Office conversion.
 - Keeps most text as independent SVG text nodes for easier editing.
 - Allows limited multi-line explanatory text blocks with a marked `data-text-role="explanatory-block"` exception.
+- Includes a bundled semantic icon library with automatic keyword matching.
 - Reduces decorative icon noise by default and favors numbered circles, dots, pills, color chips, and badges where appropriate.
 
 ## Shape-Safe Output Rules
@@ -43,7 +44,10 @@ svg_shape_safe/
 |-- SKILL.md
 |-- config.yaml
 |-- agents/
+|-- assets/
+|   `-- icons/
 |-- docs/
+|   |-- icon-matching.md
 |   |-- map-complexity-policy.md
 |   `-- troubleshooting.md
 |-- examples/
@@ -55,6 +59,7 @@ svg_shape_safe/
 |-- tests/
 |   `-- test_validate_shape_safe_svg.py
 `-- tools/
+    |-- match_shape_safe_icon.py
     `-- validate_shape_safe_svg.py
 ```
 
@@ -92,6 +97,14 @@ Use a balanced icon strategy and replace repeated decorative icons with numbered
 Use $image-to-shape-safe-svg on these five dashboard screenshots.
 Create a preflight summary first, then deliver only SVGs that pass the validator.
 ```
+
+Icon matching example:
+
+```bash
+python tools/match_shape_safe_icon.py "automation workflow" --x 120 --y 80 --size 48 --color "#5A0FB4"
+```
+
+This emits expanded SVG primitives from the bundled icon library. The output avoids `<image>`, `transform`, `marker`, `foreignObject`, and `data-icon`.
 
 For local batch work, follow:
 

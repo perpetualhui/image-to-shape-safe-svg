@@ -42,6 +42,7 @@ In validation reports, `tspan` means disallowed tspan count. Approved explanator
 
 - For local desktop/batch work, read `references/local-batch-workflow.md`.
 - For browser/web-app workflows, read `references/web-workflow.md`.
+- For semantic icon matching, read `docs/icon-matching.md` and use `tools/match_shape_safe_icon.py`.
 - For layout/icon/arrow pitfalls, read `docs/troubleshooting.md`.
 - For maps, geography, coverage diagrams, or dense polygon assets, read `docs/map-complexity-policy.md` before reconstruction.
 - For automated checks, use `tools/validate_shape_safe_svg.py`.
@@ -69,7 +70,7 @@ In validation reports, `tspan` means disallowed tspan count. Approved explanator
 - For headings, KPI numbers, labels, short chips, and independent bullets, use one text node per visual line.
 - For explanatory small text, merge adjacent same-style lines into one editable multi-line text block. This is preferred for 12, 14, and 16 px body/explanation text when the lines are a paragraph, note, bullet group, or supporting description.
 - Use a small, deliberate icon budget. A typical business slide should have about 3-5 meaningful icons, not one icon for every bullet. Dense module overview pages may use more, but repeated icons should be simplified into badges or markers.
-- Match icons from a stable SVG icon library, preferably Tabler/Office-like outline icons, only when an icon improves comprehension. Do not embed icon images.
+- Match icons from the bundled semantic icon library first (`assets/icons/shape_safe_icon_library.json`). Use `tools/match_shape_safe_icon.py` to expand a semantic label into absolute SVG primitives. Do not embed icon images or leave icon placeholders in final SVG.
 - Prefer symbolic shape replacements for minor items: numbered circles for steps, small filled circles for bullet groups, rounded pills for statuses, color chips for categories, and compact badges for "standardized", "automated", "traceable", or similar labels.
 - Use color semantically. Keep a primary brand color, one accent color, and neutral grays unless the source page already uses a richer but meaningful palette.
 - Treat tiny connector arrows as high-risk. Draw them explicitly and validate them in preview.
@@ -148,6 +149,23 @@ Good substitutions:
 - Status lists: rounded pills or check badges instead of repeated icons.
 - Category legends: color chips and short labels instead of icon sets.
 - Dense financial or operational notes: text hierarchy, dividers, and spacing instead of icons.
+
+## Built-In Icon Matching
+
+Use the bundled icon library before inventing new icons:
+
+```bash
+python tools/match_shape_safe_icon.py "automation workflow" --x 120 --y 80 --size 48 --color "#5A0FB4"
+```
+
+The tool matches semantic labels in English, Chinese, and Japanese against `assets/icons/semantic_icon_map.json`, then emits expanded SVG primitives from `assets/icons/shape_safe_icon_library.json`.
+
+Rules:
+
+- Use matched icons for primary sections, modules, risks, capabilities, and conclusions.
+- If the match is weak, use a symbolic marker instead of forcing an unrelated icon.
+- Paste or generate the expanded primitive output into final SVGs.
+- Never leave `data-icon`, nested icon placeholders, or embedded icon images in delivered SVGs.
 
 ## Layout Judgment For PPT Merge Or Restyle
 
