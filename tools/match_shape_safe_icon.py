@@ -58,7 +58,8 @@ def render_icon(icon_name: str, library: dict, x: float, y: float, size: float, 
     stroke_width = round((float(library.get("stroke_width", 1.8)) / 24.0) * size, 3)
     common = (
         f'stroke="{escape(color)}" stroke-width="{stroke_width}" '
-        'fill="none" stroke-linecap="round" stroke-linejoin="round"'
+        'fill="none" stroke-linecap="round" stroke-linejoin="round" '
+        'data-shape-safe-icon="true"'
     )
     parts = [f'<!-- shape-safe-icon: {escape(icon_name)} -->']
     for element in icon.get("elements", []):

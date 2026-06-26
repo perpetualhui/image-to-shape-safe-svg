@@ -1,5 +1,16 @@
 # Troubleshooting
 
+## User Was Not Asked About Icon Preservation
+
+Cause: the conversion skipped the mandatory icon-retention gate.
+
+Fix:
+
+- Stop before final conversion.
+- Ask: "Do you want to preserve all source icons, or should decorative/repeated icons be simplified?"
+- Continue only after the user chooses `preserve_all`, `balanced`, or `minimal`, unless the current request already specified the strategy.
+- Record the answer in the preflight note and delivery report.
+
 ## Icons Disappear After PowerPoint Conversion
 
 Cause: icons were `<use>`, external SVG references, font icons, or raster images.
@@ -57,3 +68,13 @@ This is expected. Pixel-perfect bitmap tracing often produces uneditable paths a
 ## Batch Quality Drops
 
 Reduce batch size. Dense business diagrams are safest at 3-4 pages per batch.
+
+## Icon Matching Looks Wrong
+
+Cause: semantic auto-matching chose a technically valid but visually misleading icon.
+
+Fix:
+
+- Prefer a neutral badge, numbered circle, dot, or color chip when confidence is low.
+- If the user chose `preserve_all`, report unmatched or uncertain icons rather than silently dropping them.
+- Keep icon style consistent across the batch by reusing the style anchor page.

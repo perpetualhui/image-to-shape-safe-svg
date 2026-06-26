@@ -11,6 +11,8 @@ Use this skill to reconstruct slide-like raster images into editable, Office-saf
 
 Default aesthetic bias: reduce decorative icons. Use icons only when they clarify the content hierarchy. For secondary or repetitive items, prefer numbered circles, small dots, rounded pills, color chips, status badges, or simple button-like shapes with a restrained palette.
 
+Mandatory icon-retention gate: before any SVG reconstruction, batch conversion, or final shape-safe conversion, ask the user whether they want to preserve all source icons. This is required even when the page looks simple. Do not proceed to final conversion until the user answers, unless the current user message already gives an explicit icon strategy.
+
 Default autonomy rule: when a conversion would materially change the source design, especially by reducing many icons, merging crowded pages, or splitting/reflowing content, pause before final shape conversion and give the user a small set of choices.
 
 ## Output Contract
@@ -50,8 +52,11 @@ In validation reports, `tspan` means disallowed tspan count. Approved explanator
 ## Recommended Workflow
 
 1. Inspect the source image dimensions and composition.
-2. Create a short preflight plan: complexity level, estimated icon count, text density, risky regions, layout strategy, and visual-model call budget.
-3. If icon count is high or icon reduction would change the look, ask the user to choose before final shape conversion: preserve icons, reduce to essential icons, or replace minor icons with badges/markers.
+2. Create a short preflight plan: complexity level, estimated icon count, text density, risky regions, layout strategy, visual-model call budget, and the required icon-retention question.
+3. Ask the mandatory icon-retention question before conversion: "Do you want to preserve all source icons, or should I simplify decorative/repeated icons?" Offer exactly these choices unless the user already specified one:
+   - Preserve all: keep every visible source icon that can reasonably be rebuilt as editable SVG.
+   - Balanced: keep meaningful section/module icons and convert minor repeated icons to badges, dots, or numbered markers.
+   - Minimal: remove most decorative icons and rely on typography, spacing, color, and simple markers.
 4. Rebuild the page structurally: title, subtitle, sections, cards, flows, arrows, side panels, footer.
 5. If the page contains a map or dense geographic outline, treat it as a complex polygon asset: place a simple editable placeholder first, finish the rest of the page, and handle the map last.
 6. Decide whether each icon is necessary. Keep only icons that represent primary modules, major conclusions, or high-level categories; replace decorative or repetitive icons with dots, numbered circles, pills, color chips, or badges.
@@ -122,6 +127,7 @@ The preflight summary should be short and actionable. Include:
 
 - Complexity level.
 - Estimated meaningful icon count and decorative icon count.
+- Mandatory icon-retention decision status: `preserve_all`, `balanced`, `minimal`, or `not_answered`.
 - Text density risk.
 - Layout strategy.
 - Whether user choice is needed before reducing icons, splitting pages, or applying a merge/restyle strategy.
@@ -137,11 +143,13 @@ Before drawing icons, classify each visual marker:
 
 Avoid generating many icons just because the original image contains many small visual decorations. Too many editable icons make the PPT harder to read, slower to edit, and more fragile after PowerPoint conversion.
 
-If the source appears over-iconized, ask before converting to final shapes. Offer no more than three clear choices:
+Always ask before converting to final shapes whether all source icons should be preserved. Offer no more than three clear choices:
 
-- Preserve: keep most icons for source fidelity.
+- Preserve all: keep every visible source icon that can reasonably be rebuilt as editable SVG.
 - Balanced: keep only section/module icons and convert minor icons to badges or markers.
 - Minimal: remove most decorative icons and use typography, spacing, and color blocks instead.
+
+Do not silently choose `balanced` or `minimal`. If the user has not answered the icon-retention question, stop before final conversion and ask.
 
 Good substitutions:
 
@@ -164,8 +172,20 @@ Rules:
 
 - Use matched icons for primary sections, modules, risks, capabilities, and conclusions.
 - If the match is weak, use a symbolic marker instead of forcing an unrelated icon.
+- If the user chose `preserve_all`, replace each source icon with the closest editable shape-safe equivalent and report any icon that could not be matched confidently.
 - Paste or generate the expanded primitive output into final SVGs.
 - Never leave `data-icon`, nested icon placeholders, or embedded icon images in delivered SVGs.
+
+## High-Frequency Failure Rules
+
+Recent repeated issues should be handled as hard checks:
+
+- User was not asked about icon preservation: stop and ask before final conversion.
+- Too many icons made the SVG noisy or fragile: ask again before simplifying; do not assume simplification is allowed.
+- Auto-matched icon looks semantically wrong: replace with a simpler badge/marker or report the uncertainty instead of forcing the match.
+- Icon placeholders remained in output: expand them into primitives before delivery; `data_icon` must be 0.
+- Icons survived validation but visually crowded text or arrows: reduce size, move them, or ask whether simplification is acceptable.
+- Different pages in a batch use inconsistent icon styles: lock an icon style from the anchor page and reuse it.
 
 ## Layout Judgment For PPT Merge Or Restyle
 

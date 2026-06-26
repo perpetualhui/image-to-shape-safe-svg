@@ -7,6 +7,7 @@ Use this workflow when the task runs in a browser, web app, serverless function,
 ```text
 Upload image(s)
   -> vision/structure extraction
+  -> mandatory icon-retention choice
   -> normalized page JSON
   -> SVG reconstruction
   -> icon expansion
@@ -19,6 +20,12 @@ Upload image(s)
 ## Required Web Output
 
 Return final SVG files only. Do not expose intermediate `svg_output`.
+
+Before SVG generation or download, the UI must ask whether to preserve all source icons. Continue only after the user chooses:
+
+- `preserve_all`: rebuild every visible source icon that can reasonably become editable SVG.
+- `balanced`: keep meaningful section/module icons and simplify decorative or repeated icons.
+- `minimal`: remove most decorative icons and use typography, spacing, color, and simple markers.
 
 For batch output, download:
 
@@ -34,6 +41,7 @@ svg_shape_safe.zip
 
 - Use SVG DOM APIs or a server-side XML builder, not string patches over arbitrary uploaded SVG.
 - Inline icon paths from a bundled icon set at generation time.
+- Do not simplify, remove, or replace source icons until the user has made the required icon-retention choice.
 - Do not use external icon URLs; they may fail offline or disappear during Office conversion.
 - Avoid CSS-dependent layout for important geometry. Prefer explicit attributes on each element.
 - Avoid `foreignObject`; Office conversion is unreliable.
@@ -75,6 +83,7 @@ Use a normalized page JSON before SVG generation:
 ```json
 {
   "canvas": {"width": 2400, "height": 1350},
+  "icon_retention_decision": "balanced",
   "texts": [{"x": 92, "y": 112, "lines": ["Title"], "size": 54, "weight": 850}],
   "shapes": [{"type": "rect", "x": 100, "y": 200, "w": 300, "h": 80, "fill": "#fff"}],
   "icons": [{"name": "chart-bar", "cx": 200, "cy": 300, "size": 56}],

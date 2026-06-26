@@ -1,4 +1,4 @@
-version: "1.0.0"
+version: "1.1.0"
 default_output_dir: "svg_shape_safe"
 canvas:
   default_width: 2400
@@ -13,13 +13,16 @@ icon_policy:
   bundled_icon_library: "assets/icons/shape_safe_icon_library.json"
   semantic_icon_map: "assets/icons/semantic_icon_map.json"
   icon_matcher_tool: "tools/match_shape_safe_icon.py"
+  require_user_icon_retention_decision: true
+  mandatory_question: "Do you want to preserve all source icons, or should decorative/repeated icons be simplified?"
+  may_continue_without_answer: false
   reduce_decorative_icons: true
   default_max_meaningful_icons: 5
   ask_user_threshold_total_icons: 8
   over_iconized_threshold_total_icons: 12
   allow_more_for_module_overviews: true
   user_choices:
-    - preserve
+    - preserve_all
     - balanced
     - minimal
   replacements:

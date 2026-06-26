@@ -28,6 +28,8 @@ workflow process -> workflow
 
 If there is no good match, use the `workflow` fallback or replace the icon with a symbolic marker such as a numbered circle, small dot, status badge, or color chip.
 
+Icon matching does not replace the mandatory user decision. Before final conversion, ask whether the user wants to preserve all source icons. If the user chooses `preserve_all`, match and rebuild every visible source icon that is reasonably reconstructable. If a match is uncertain, report it instead of silently simplifying.
+
 ## CLI Examples
 
 Print only the matched icon name:
@@ -53,6 +55,7 @@ The generated snippet does not use `<image>`, `transform`, `marker`, `foreignObj
 ## Reconstruction Guidance
 
 - Use these icons only for primary modules, major conclusions, important risks, or high-level categories.
-- Do not use a unique icon for every bullet.
-- For repeated items, prefer numbered circles, dots, pills, color chips, or badges.
+- Do not use a unique icon for every bullet unless the user chose `preserve_all`.
+- For repeated items, prefer numbered circles, dots, pills, color chips, or badges only when the user chose `balanced` or `minimal`.
 - After matching, paste or generate the expanded primitives into the final SVG. Do not leave a placeholder.
+- If auto-matching returns a visually or semantically wrong icon, use a simpler marker or ask for confirmation instead of forcing the match.

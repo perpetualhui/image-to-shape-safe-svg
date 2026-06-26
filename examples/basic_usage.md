@@ -7,6 +7,13 @@ Use $image-to-shape-safe-svg to convert these three slide screenshots into edita
 Only deliver svg_shape_safe. Make sure icons and arrowheads survive PowerPoint convert-to-shapes.
 ```
 
+Required first response before conversion:
+
+```text
+Do you want me to preserve all source icons, or should I simplify decorative/repeated icons?
+Choices: preserve_all, balanced, minimal.
+```
+
 Expected output:
 
 ```text

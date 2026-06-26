@@ -18,9 +18,9 @@ Only `svg_shape_safe/` is user-facing output. Temporary `svg_output/` or `svg_fi
 ## Fast Path
 
 1. Create a new batch folder. Do not overwrite earlier user-fixed batches.
-2. Create a preflight note for each page: complexity level, estimated icon count, text density risk, visual-model call budget, and whether user choice is needed.
+2. Create a preflight note for each page: complexity level, estimated icon count, text density risk, visual-model call budget, and icon-retention decision status.
 3. For multi-page batches, pick one style anchor page first and use it as the reference for the rest of the batch.
-4. If a page is over-iconized or a major restyle/split is needed, ask the user before final shape conversion.
+4. Before writing final SVGs, always ask the user whether to preserve all source icons. Do not continue until the user chooses `preserve_all`, `balanced`, or `minimal`, unless the current request already specified one.
 5. Write `build_batch_svgs.py` to reconstruct pages as structured SVG.
 6. Use placeholders only internally if needed, such as `data-icon`, then expand them before delivery.
 7. Run the shape-safe conversion step.
@@ -84,8 +84,8 @@ def explanatory_text_block(
 
 - Do not use the explanatory block helper for titles, KPI numbers, labels, legends that need independent positioning, or text crossing card/column boundaries.
 - Match icons from a real SVG icon library and expand them into paths.
-- Keep only meaningful icons by default. Convert minor or repeated icons into numbered circles, dots, rounded pills, color chips, or badges.
-- For icon-heavy pages, record the proposed icon strategy as `preserve`, `balanced`, or `minimal` before writing final SVGs.
+- Keep only meaningful icons only after the user chooses `balanced` or `minimal`. Convert minor or repeated icons into numbered circles, dots, rounded pills, color chips, or badges only when that choice allows it.
+- Record the required icon strategy as `preserve_all`, `balanced`, or `minimal` before writing final SVGs.
 - For batches that should feel like one deck, keep palette, typography scale, icon treatment, card radius, and spacing consistent across pages; compare each new page against the anchor and the previous page.
 - Convert all arrows into path/line plus polygon arrowheads.
 - Re-render previews after every meaningful layout fix.
@@ -98,6 +98,7 @@ Save a JSON report with these fields per file:
 {
   "file": "svg_shape_safe/example.svg",
   "complexity": "medium",
+  "icon_retention_decision": "balanced",
   "icon_strategy": "balanced",
   "visual_model_calls_budget": 1,
   "image": 0,

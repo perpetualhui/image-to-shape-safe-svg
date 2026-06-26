@@ -121,8 +121,8 @@ references/web-workflow.md
 ## Recommended Workflow
 
 1. Inspect the image dimensions and composition.
-2. Create a short preflight note with complexity, icon count, text density risk, layout strategy, and visual-model call budget.
-3. Ask before major restyling, icon reduction, page splitting, or structure changes.
+2. Create a short preflight note with complexity, icon count, text density risk, layout strategy, visual-model call budget, and icon-retention decision status.
+3. Before conversion, always ask whether the user wants to preserve all source icons or simplify decorative/repeated icons.
 4. Rebuild the page structurally with editable SVG primitives.
 5. Use a small, deliberate icon budget.
 6. Draw arrows as lines or paths plus baked polygon arrowheads.
