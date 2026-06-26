@@ -1,5 +1,7 @@
 # Image To Shape-Safe SVG
 
+Languages: [English](README.md) | [简体中文](README.zh-CN.md) | [日本語](README.ja.md)
+
 Convert slide-like images, screenshots, flowcharts, business diagrams, and infographic pages into editable SVG files that are safer to convert into PowerPoint shapes.
 
 This is a Codex skill for reconstructing visual documents structurally. It does not trace a bitmap. Instead, it rebuilds the page with SVG primitives such as text, paths, lines, polygons, icons, and simple shapes so the output remains easier to edit in Office.
@@ -79,6 +81,18 @@ Use $image-to-shape-safe-svg to convert these slide screenshots into editable SV
 Only deliver svg_shape_safe. Make sure icons and arrowheads survive PowerPoint convert-to-shapes.
 ```
 
+More examples:
+
+```text
+Use $image-to-shape-safe-svg to rebuild this process diagram as editable SVG.
+Use a balanced icon strategy and replace repeated decorative icons with numbered circles.
+```
+
+```text
+Use $image-to-shape-safe-svg on these five dashboard screenshots.
+Create a preflight summary first, then deliver only SVGs that pass the validator.
+```
+
 For local batch work, follow:
 
 ```text
@@ -136,4 +150,4 @@ For dense business slides, this skill favors clarity and editability over excess
 
 ## License
 
-No license has been declared yet. Add one before distributing or accepting external contributions.
+MIT License. See [LICENSE](LICENSE).
