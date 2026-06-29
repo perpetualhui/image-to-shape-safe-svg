@@ -43,7 +43,8 @@ In validation reports, `tspan` means disallowed tspan count. Approved explanator
 ## When To Use Which Reference
 
 - For local desktop/batch work, read `references/local-batch-workflow.md`.
-- For browser/web-app workflows, read `references/web-workflow.md`.
+- For browser/web-app implementation workflows, read `references/web-workflow.md`.
+- For Codex web/cloud workflows and repository-vendored skill usage, read `references/codex-web-workflow.md`.
 - For semantic icon matching, read `docs/icon-matching.md` and use `tools/match_shape_safe_icon.py`.
 - For layout/icon/arrow pitfalls, read `docs/troubleshooting.md`.
 - For maps, geography, coverage diagrams, or dense polygon assets, read `docs/map-complexity-policy.md` before reconstruction.
