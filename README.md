@@ -15,6 +15,8 @@ This is a Codex skill for reconstructing visual documents structurally. It does 
 - Keeps most text as independent SVG text nodes for easier editing.
 - Allows limited multi-line explanatory text blocks with a marked `data-text-role="explanatory-block"` exception.
 - Includes a bundled semantic icon library with automatic keyword matching.
+- Outputs individual SVG files by default; ZIP and multi-page delivery reports require user approval.
+- Uses one semantic paragraph per editable text box with a fixed Microsoft YaHei typography scale.
 - Reduces decorative icon noise by default and favors numbered circles, dots, pills, color chips, and badges where appropriate.
 
 ## Shape-Safe Output Rules
@@ -31,11 +33,13 @@ tspan = 0, except approved explanatory blocks
 foreign_object = 0
 ```
 
-The default output folder is:
+The default output is individual standalone SVG files. If a folder is useful, use:
 
 ```text
 svg_shape_safe/
 ```
+
+Do not create ZIP archives or multi-page delivery reports unless the user explicitly asks or approves them.
 
 ## Repository Layout
 
@@ -121,13 +125,16 @@ references/web-workflow.md
 ## Recommended Workflow
 
 1. Inspect the image dimensions and composition.
-2. Create a short preflight note with complexity, icon count, text density risk, layout strategy, visual-model call budget, and icon-retention decision status.
+2. Create a short preflight note with complexity, icon count, text density risk, layout strategy, visual-model call budget, icon-retention decision status, typography assumptions, and report preference for multi-page jobs.
 3. Before conversion, always ask whether the user wants to preserve all source icons or simplify decorative/repeated icons.
-4. Rebuild the page structurally with editable SVG primitives.
-5. Use a small, deliberate icon budget.
-6. Draw arrows as lines or paths plus baked polygon arrowheads.
-7. Validate the SVG files with the included tool.
-8. Render previews and inspect for layout drift, overlap, missing arrowheads, and Office-risky SVG features.
+4. Ask before generating a multi-page validation/delivery report.
+5. Rebuild the page structurally with editable SVG primitives.
+6. Use one semantic paragraph per editable text box.
+7. Use the fixed typography scale: `24 / 18 / 16 / 14 / 12 / 10 / 8`.
+8. Use a small, deliberate icon budget.
+9. Draw arrows as lines or paths plus baked polygon arrowheads.
+10. Validate the SVG files with the included tool.
+11. Render previews and inspect for layout drift, overlap, missing arrowheads, and Office-risky SVG features.
 
 ## Validation
 

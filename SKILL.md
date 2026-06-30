@@ -17,7 +17,11 @@ Default autonomy rule: when a conversion would materially change the source desi
 
 ## Output Contract
 
-Deliver final SVGs in a folder named `svg_shape_safe` unless the user specifies another output folder.
+Deliver final outputs as individual standalone `.svg` files by default.
+
+Do not output `.zip` archives unless the user explicitly requests compressed packaging. If a folder structure is useful, use a folder named `svg_shape_safe`, but still deliver individual SVG files whenever the runtime supports direct SVG file output.
+
+For multi-page conversion, ask whether the user wants a validation/delivery report before generating `shape_safe_delivery_report.json`. Do not include the report by default unless the user requests it, the workflow requires it, or the user has already approved report generation.
 
 Hard validation targets for every delivered SVG:
 
@@ -34,11 +38,40 @@ Practical meaning:
 - Do not embed the source image or full-page screenshots.
 - Expand icon placeholders into real SVG paths before delivery.
 - Bake arrowheads as polygons, not SVG markers.
-- Use independent single-line `<text x y>...</text>` nodes for titles, numbers, labels, and short callouts.
-- For explanatory small text where several adjacent lines share the same font size, weight, fill, and paragraph meaning, use one multi-line text block so it remains easier to edit in PPT. Mark it with `data-text-role="explanatory-block"` and keep `tspan` use limited to that block.
+- Use independent single-line `<text x y>...</text>` nodes for titles, numbers, labels, badges, axis labels, process labels, and short standalone callouts.
+- Use one editable text box per semantic paragraph for body/explanatory text. When a paragraph spans multiple visual lines, use one `<text data-text-role="explanatory-block">` with child `<tspan>` lines.
 - Avoid transforms; place each shape with absolute coordinates.
 
-In validation reports, `tspan` means disallowed tspan count. Approved explanatory small-text lines are reported separately as `explanatory_tspan`.
+In validation reports, `tspan` means disallowed tspan count. Approved explanatory paragraph lines inside `<text data-text-role="explanatory-block">` are reported separately as `explanatory_tspan`. Do not use `tspan` for headings, numbers, icons, labels, badges, legends, or unrelated text groups.
+
+### File Delivery Policy
+
+Default delivery:
+
+- Output a single standalone `.svg` file for each converted page.
+- Do not output `.zip` archives by default.
+- Do not bundle SVGs unless the user explicitly asks for batch packaging.
+- For single-page conversion, return one standalone SVG file.
+- For multi-page conversion, return multiple individual SVG files if supported.
+- Ask before creating a multi-page validation/delivery report.
+
+If direct SVG file attachment is not supported:
+
+- Provide the SVG source code directly or use the least compressed/non-archive delivery option available.
+- Do not create a ZIP merely to work around SVG attachment limitations unless the user approves.
+
+### Default Delivery, Typography, And Text-Box Policy
+
+Unless the user specifies otherwise, apply these defaults across the whole output, not slide by slide:
+
+- Delivery: individual standalone SVG files; no ZIP unless explicitly requested.
+- Report: ask before producing a multi-page validation/delivery report.
+- Font: `Microsoft YaHei, Noto Sans SC, Arial, sans-serif`.
+- Font-size scale: `24 / 18 / 16 / 14 / 12 / 10 / 8`.
+- Text grouping: one semantic paragraph per editable text box.
+- Body paragraphs: use `data-text-role="explanatory-block"` with `<tspan>` lines when multiple visual lines belong to one paragraph.
+- Shape safety: no embedded images, no `foreignObject`, no transforms, no SVG markers, no icon placeholders.
+- PowerPoint conversion priority: editable structure and clean text boxes take priority over pixel-perfect tracing.
 
 ## When To Use Which Reference
 
@@ -52,7 +85,7 @@ In validation reports, `tspan` means disallowed tspan count. Approved explanator
 ## Recommended Workflow
 
 1. Inspect the source image dimensions and composition.
-2. Create a short preflight plan: complexity level, estimated icon count, text density, risky regions, layout strategy, visual-model call budget, and the required icon-retention question.
+2. Create a short preflight plan: complexity level, estimated icon count, text density, risky regions, layout strategy, visual-model call budget, required icon-retention question, typography assumptions, and report preference when the job has multiple pages.
 3. Ask the mandatory icon-retention question before conversion: "Do you want to preserve all source icons, or should I simplify decorative/repeated icons?" Offer exactly these choices unless the user already specified one:
    - Preserve all: keep every visible source icon that can reasonably be rebuilt as editable SVG.
    - Balanced: keep meaningful section/module icons and convert minor repeated icons to badges, dots, or numbered markers.
@@ -61,8 +94,8 @@ In validation reports, `tspan` means disallowed tspan count. Approved explanator
 5. If the page contains a map or dense geographic outline, treat it as a complex polygon asset: place a simple editable placeholder first, finish the rest of the page, and handle the map last.
 6. Decide whether each icon is necessary. Keep only icons that represent primary modules, major conclusions, or high-level categories; replace decorative or repetitive icons with dots, numbered circles, pills, color chips, or badges.
 7. Draw arrows as lines or paths plus baked polygon arrowheads.
-8. Place structural text as separate single-line SVG text nodes. Group explanatory small text into one multi-line text block when the lines share the same style and belong to the same paragraph/list.
-9. Generate intermediate SVGs only if needed, then produce final `svg_shape_safe`.
+8. Place headings, labels, badges, numbers, and short standalone callouts as independent text nodes. Place each body paragraph or explanatory paragraph in one editable text box.
+9. Generate intermediate SVGs only if needed, then produce individual final SVG files.
 10. Validate hard metrics.
 11. Render previews and visually inspect for text overlap, missing necessary icons, over-iconized pages, missing arrowheads, map overflow, and layout drift.
 
@@ -73,7 +106,8 @@ In validation reports, `tspan` means disallowed tspan count. Approved explanator
 - Prefer visual fidelity for structure, spacing, color, and hierarchy over pixel-perfect tracing.
 - Keep text shorter or split lines when needed. Text stability after Office conversion is more important than matching exact source line breaks.
 - For headings, KPI numbers, labels, short chips, and independent bullets, use one text node per visual line.
-- For explanatory small text, merge adjacent same-style lines into one editable multi-line text block. This is preferred for 12, 14, and 16 px body/explanation text when the lines are a paragraph, note, bullet group, or supporting description.
+- For body/explanatory text, one semantic paragraph must become one editable text box. Do not split one paragraph into one text box per visual line.
+- For explanatory small text, merge adjacent same-style lines into one editable multi-line text block. This is required for 12, 14, and 16 px body/explanation text when the lines are a paragraph, note, bullet group, or supporting description.
 - Use a small, deliberate icon budget. A typical business slide should have about 3-5 meaningful icons, not one icon for every bullet. Dense module overview pages may use more, but repeated icons should be simplified into badges or markers.
 - Match icons from the bundled semantic icon library first (`assets/icons/shape_safe_icon_library.json`). Use `tools/match_shape_safe_icon.py` to expand a semantic label into absolute SVG primitives. Do not embed icon images or leave icon placeholders in final SVG.
 - Prefer symbolic shape replacements for minor items: numbered circles for steps, small filled circles for bullet groups, rounded pills for statuses, color chips for categories, and compact badges for "standardized", "automated", "traceable", or similar labels.
@@ -82,13 +116,74 @@ In validation reports, `tspan` means disallowed tspan count. Approved explanator
 - Treat maps, coastlines, country borders, and dense coverage regions as high-risk complex polygons. Default to an abstract network/coverage placeholder unless the map is the main subject.
 - Do not spend the first reconstruction pass tracing a world map. Build the editable slide structure first, then decide whether the map needs a simplified outline, an abstract replacement, or a separately sourced simplified asset.
 
+## Typography System
+
+For Chinese business-slide reconstruction, use this typography system across the entire page or batch unless the user or client specifies otherwise.
+
+Default font:
+
+- `Microsoft YaHei`
+- Fallback: `Microsoft YaHei, Noto Sans SC, Arial, sans-serif`
+
+Allowed font-size scale:
+
+- `24 px`
+- `18 px`
+- `16 px`
+- `14 px`
+- `12 px`
+- `10 px`
+- `8 px`
+
+Default mapping:
+
+- Page title: `24 px`, bold.
+- Subtitle or small text below title: `18 px`.
+- Section/module title: `18 px`, bold.
+- Card title: `18 px`, bold.
+- Main body text: `16 px`.
+- Dense body text: `14 px`.
+- Secondary notes, captions, legends: `12 px`.
+- Fine print or compact annotations: `10 px` or `8 px`.
+
+Do not use arbitrary intermediate sizes such as `17`, `19`, `21`, or `23` unless the user explicitly requests them or visual reconstruction absolutely requires a documented exception.
+
+When text is crowded:
+
+- Prefer adjusting line breaks, card spacing, and text box width before changing the typography system.
+- Prefer reducing body text from `16 px` to `14 px` before distorting layout.
+- Use `12 px`, `10 px`, or `8 px` only for clearly secondary information.
+- Do not mix unrelated font scales across pages in one batch. Lock the scale from the style anchor and reuse it.
+
+## Text Box Grouping Policy
+
+One semantic paragraph must become one editable text box.
+
+Do:
+
+- Main title: one text box.
+- Subtitle or module title: one text box.
+- Phase label with two lines: one text box if both lines name the same phase.
+- Card title: one text box.
+- Card body paragraph: one text box.
+- Benefit or conclusion sentence: one text box.
+- Numbered circle value: independent text.
+- Process labels such as `P2P`, `O2C`, `R2R`: independent text.
+
+Do not:
+
+- Split one paragraph into one text box per visual line.
+- Merge unrelated paragraphs across cards, columns, grid cells, or semantic sections.
+- Merge text with different semantic roles merely because it is close together.
+- Use paragraph `<tspan>` grouping for headings, numbers, badges, standalone labels, legends, or icons.
+
 ## Text Grouping For Explanatory Small Text
 
 Explanatory small text means supporting copy that is visually subordinate to a title, KPI, step label, card heading, or section heading. It often appears as two or more short lines with similar size, weight, color, and line spacing.
 
 Default behavior:
 
-- Merge explanatory lines into one logical text box when they share the same font size, weight, fill, alignment, and semantic group.
+- Merge explanatory lines into one logical text box when they share the same font size, weight, fill, alignment, and semantic paragraph.
 - Prefer body sizes 16, 14, and 12. If the source uses smaller text, reduce only as needed, but keep each merged block internally consistent.
 - Keep line height about `1.25-1.45 * font-size`, with a little extra space for dense Chinese.
 - Use separate text boxes when font size, weight, color, indentation, or semantic role changes.
@@ -106,6 +201,27 @@ SVG pattern:
 ```
 
 Use this exception only for explanatory small text. Do not use `tspan` for icons, headings, KPI numbers, legends that need separate positioning, or text that should remain independently selectable.
+
+## Pre-Generation Typography And Layout Confirmation
+
+Before final SVG generation, briefly confirm typography and layout assumptions when:
+
+- The source image has dense text.
+- The source uses inconsistent font sizes.
+- The client may require a specific font or font-size hierarchy.
+- The conversion target is PowerPoint shape conversion.
+- The reconstruction requires meaningful reflow, resizing, or simplification.
+- The job has multiple pages and may need a validation/delivery report.
+
+Ask concise questions such as:
+
+- Should I use the default Microsoft YaHei typography scale: `24 / 18 / 16 / 14 / 12 / 10 / 8`?
+- Should body text prioritize readability after PowerPoint shape conversion, even if the layout differs slightly from the source image?
+- Should each semantic paragraph be grouped into one editable text box?
+- For multi-page conversion, do you want a validation/delivery report?
+- Are there any client-specific font, color, spacing, or title-size requirements?
+
+If the user has already provided a standing preference, apply it without repeatedly asking.
 
 ## Preflight Complexity And Vision Budget
 

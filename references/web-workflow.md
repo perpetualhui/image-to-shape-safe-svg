@@ -8,13 +8,14 @@ Use this workflow when the task runs in a browser, web app, serverless function,
 Upload image(s)
   -> vision/structure extraction
   -> mandatory icon-retention choice
+  -> optional report choice for multi-page jobs
   -> normalized page JSON
   -> SVG reconstruction
   -> icon expansion
   -> arrowhead baking
   -> validation
   -> browser preview
-  -> download svg_shape_safe.zip
+  -> download individual SVG file(s)
 ```
 
 ## Required Web Output
@@ -27,15 +28,18 @@ Before SVG generation or download, the UI must ask whether to preserve all sourc
 - `balanced`: keep meaningful section/module icons and simplify decorative or repeated icons.
 - `minimal`: remove most decorative icons and use typography, spacing, color, and simple markers.
 
-For batch output, download:
+Before multi-page delivery, ask whether the user wants a validation/delivery report. Do not generate `shape_safe_delivery_report.json` by default.
+
+For batch output, return individual SVG files by default:
 
 ```text
-svg_shape_safe.zip
-├── page_01.svg
-├── page_02.svg
-├── page_03.svg
-└── shape_safe_delivery_report.json
+svg_shape_safe/
+|-- page_01.svg
+|-- page_02.svg
+`-- page_03.svg
 ```
+
+Only create `svg_shape_safe.zip` when the user explicitly requests compressed packaging.
 
 ## Browser Rendering Rules
 
@@ -46,7 +50,9 @@ svg_shape_safe.zip
 - Avoid CSS-dependent layout for important geometry. Prefer explicit attributes on each element.
 - Avoid `foreignObject`; Office conversion is unreliable.
 - Avoid `textPath` and transformed text.
-- Avoid `tspan` except inside approved explanatory small-text blocks marked with `data-text-role="explanatory-block"`.
+- Use the fixed typography scale across the whole page or batch: `24 / 18 / 16 / 14 / 12 / 10 / 8`.
+- Use one semantic paragraph per editable text box.
+- Avoid `tspan` except inside approved explanatory paragraph text blocks marked with `data-text-role="explanatory-block"`.
 
 ## Web Validation
 
@@ -73,7 +79,8 @@ Show per-page preview thumbnails and flags:
 - No missing arrowheads.
 - No text overlap.
 - Text remains inside boxes.
-- Dense Chinese explanatory text is grouped into editable multi-line text blocks when the lines share the same style and paragraph meaning.
+- Dense Chinese explanatory text is grouped into editable multi-line text boxes when the lines belong to the same semantic paragraph.
+- Font sizes come from the fixed scale only.
 - Final SVG contains no embedded raster image.
 
 ## Recommended JSON Shape Schema
@@ -83,8 +90,11 @@ Use a normalized page JSON before SVG generation:
 ```json
 {
   "canvas": {"width": 2400, "height": 1350},
+  "delivery": {"format": "individual_svg", "zip_requested": false, "report_requested": false},
   "icon_retention_decision": "balanced",
-  "texts": [{"x": 92, "y": 112, "lines": ["Title"], "size": 54, "weight": 850}],
+  "typography": {"font_family": "Microsoft YaHei, Noto Sans SC, Arial, sans-serif", "scale": [24, 18, 16, 14, 12, 10, 8]},
+  "texts": [{"x": 92, "y": 112, "lines": ["Title"], "size": 24, "weight": 700, "role": "page_title"}],
+  "paragraphs": [{"x": 160, "y": 260, "lines": ["Body line one", "Body line two"], "size": 16, "role": "explanatory-block"}],
   "shapes": [{"type": "rect", "x": 100, "y": 200, "w": 300, "h": 80, "fill": "#fff"}],
   "icons": [{"name": "chart-bar", "cx": 200, "cy": 300, "size": 56}],
   "arrows": [{"points": [[100, 100], [200, 100]], "stroke": "#5A0FB4", "width": 4}],

@@ -1,5 +1,14 @@
-version: "1.1.0"
+version: "1.2.0"
 default_output_dir: "svg_shape_safe"
+delivery:
+  default_format: "individual_svg"
+  output_zip_by_default: false
+  require_user_request_for_zip: true
+  direct_svg_files_preferred: true
+  fallback_to_svg_source_when_attachment_unavailable: true
+  ask_before_report_for_multipage: true
+  default_include_delivery_report: false
+  report_filename: "shape_safe_delivery_report.json"
 canvas:
   default_width: 2400
   default_height: 1350
@@ -76,11 +85,38 @@ deck_consistency:
     - spacing
 text:
   font_family: "Microsoft YaHei, Noto Sans SC, Arial, sans-serif"
+  default_font: "Microsoft YaHei"
+  allowed_font_sizes:
+    - 24
+    - 18
+    - 16
+    - 14
+    - 12
+    - 10
+    - 8
+  font_size_mapping:
+    page_title: 24
+    subtitle: 18
+    section_title: 18
+    module_title: 18
+    card_title: 18
+    main_body: 16
+    dense_body: 14
+    secondary_note: 12
+    caption: 12
+    legend: 12
+    fine_print: 10
+    compact_annotation: 8
+  forbid_arbitrary_intermediate_font_sizes: true
+  apply_scale_consistently_across_page: true
+  apply_scale_consistently_across_batch: true
   use_tspan: false
-  one_text_node_per_line: true
+  one_text_node_per_line: false
+  one_semantic_paragraph_per_text_box: true
   explanatory_blocks:
     enabled: true
     use_multiline_text_box: true
+    required_for_multiline_body_paragraphs: true
     role_attribute: "data-text-role=\"explanatory-block\""
     allowed_tspan_exception: true
     preferred_font_sizes:

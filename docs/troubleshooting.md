@@ -11,6 +11,26 @@ Fix:
 - Continue only after the user chooses `preserve_all`, `balanced`, or `minimal`, unless the current request already specified the strategy.
 - Record the answer in the preflight note and delivery report.
 
+## ZIP Was Produced Without Approval
+
+Cause: the workflow treated batch delivery as a packaging problem and defaulted to `svg_shape_safe.zip`.
+
+Fix:
+
+- Deliver individual `.svg` files by default.
+- Create ZIP archives only when the user explicitly asks for compressed packaging.
+- If direct SVG attachment is unavailable, provide SVG source code or ask for approval before packaging.
+
+## Multi-Page Report Was Produced Without Approval
+
+Cause: the workflow generated `shape_safe_delivery_report.json` by default.
+
+Fix:
+
+- Ask before creating a multi-page validation/delivery report.
+- Record `report_requested: true` only after user approval.
+- Do not use report generation as a substitute for inspecting SVG previews.
+
 ## Icons Disappear After PowerPoint Conversion
 
 Cause: icons were `<use>`, external SVG references, font icons, or raster images.
@@ -39,6 +59,8 @@ Fix:
 
 - Use independent `<text x y>` for titles, KPI numbers, labels, and individually positioned text.
 - For same-style explanatory small text, group adjacent lines into one `data-text-role="explanatory-block"` text block.
+- One semantic paragraph must be one editable text box; do not split one paragraph into one text node per visual line.
+- Use only the fixed typography scale: `24 / 18 / 16 / 14 / 12 / 10 / 8`.
 - Avoid `transform`.
 - Split long Chinese sentences manually.
 - Leave extra line height and box padding.

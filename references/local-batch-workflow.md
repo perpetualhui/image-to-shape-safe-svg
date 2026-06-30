@@ -6,33 +6,37 @@ Use this workflow when Codex has filesystem access and can run Python/PowerShell
 
 ```text
 batch-conversion-N/
-├── build_batch_svgs.py
-├── make_shape_safe_svgs.py
-├── data/
-├── reports/
-└── svg_shape_safe/
+|-- build_batch_svgs.py
+|-- make_shape_safe_svgs.py
+|-- data/
+|-- reports/
+`-- svg_shape_safe/
 ```
 
-Only `svg_shape_safe/` is user-facing output. Temporary `svg_output/` or `svg_final/` may exist during processing but should be deleted after delivery.
+Only individual `.svg` files in `svg_shape_safe/` are user-facing output by default. Temporary `svg_output/` or `svg_final/` may exist during processing but should be deleted after delivery.
+
+Do not create a ZIP unless the user explicitly asks for compressed packaging.
 
 ## Fast Path
 
 1. Create a new batch folder. Do not overwrite earlier user-fixed batches.
-2. Create a preflight note for each page: complexity level, estimated icon count, text density risk, visual-model call budget, and icon-retention decision status.
+2. Create a preflight note for each page: complexity level, estimated icon count, text density risk, visual-model call budget, icon-retention decision status, typography assumptions, and report preference.
 3. For multi-page batches, pick one style anchor page first and use it as the reference for the rest of the batch.
 4. Before writing final SVGs, always ask the user whether to preserve all source icons. Do not continue until the user chooses `preserve_all`, `balanced`, or `minimal`, unless the current request already specified one.
-5. Write `build_batch_svgs.py` to reconstruct pages as structured SVG.
-6. Use placeholders only internally if needed, such as `data-icon`, then expand them before delivery.
-7. Run the shape-safe conversion step.
-8. Bake all marker arrows into polygons.
-9. Validate hard metrics.
-10. Render PNG previews with Chrome or another SVG renderer.
-11. Inspect previews and patch layout problems.
+5. For multi-page batches, ask whether the user wants `shape_safe_delivery_report.json`. Do not generate the report by default.
+6. Lock the typography scale for the whole batch: Microsoft YaHei plus `24 / 18 / 16 / 14 / 12 / 10 / 8`.
+7. Write `build_batch_svgs.py` to reconstruct pages as structured SVG.
+8. Use placeholders only internally if needed, such as `data-icon`, then expand them before delivery.
+9. Run the shape-safe conversion step.
+10. Bake all marker arrows into polygons.
+11. Validate hard metrics.
+12. Render PNG previews with Chrome or another SVG renderer.
+13. Inspect previews and patch layout problems.
 
 ## Implementation Notes
 
 - Use absolute canvas coordinates.
-- Use one helper for structural single-line text nodes:
+- Use one helper for structural single-line text nodes. Use this only for titles, KPI numbers, labels, badges, axis labels, process labels, and other standalone text:
 
 ```python
 def text(
@@ -52,7 +56,7 @@ def text(
     return "\n".join(parts)
 ```
 
-- Use a separate helper for explanatory small text blocks. Use this when several adjacent lines are the same 16, 14, or 12 px style and belong to one paragraph, note, or supporting bullet group:
+- Use a separate helper for explanatory body paragraphs. Use this when several adjacent visual lines belong to one semantic paragraph, note, benefit statement, or supporting bullet group:
 
 ```python
 def explanatory_text_block(
@@ -82,8 +86,10 @@ def explanatory_text_block(
     return "\n".join(parts)
 ```
 
-- Do not use the explanatory block helper for titles, KPI numbers, labels, legends that need independent positioning, or text crossing card/column boundaries.
-- Match icons from a real SVG icon library and expand them into paths.
+- One semantic paragraph must become one editable text box. Do not split body paragraphs into one text node per visual line.
+- Do not use the explanatory block helper for titles, KPI numbers, labels, legends, badges, process labels, or text crossing card/column boundaries.
+- Use only the fixed typography scale: `24 / 18 / 16 / 14 / 12 / 10 / 8`. Do not introduce arbitrary intermediate font sizes unless explicitly documented.
+- Match icons from the bundled SVG icon library and expand them into paths/shapes.
 - Keep only meaningful icons only after the user chooses `balanced` or `minimal`. Convert minor or repeated icons into numbered circles, dots, rounded pills, color chips, or badges only when that choice allows it.
 - Record the required icon strategy as `preserve_all`, `balanced`, or `minimal` before writing final SVGs.
 - For batches that should feel like one deck, keep palette, typography scale, icon treatment, card radius, and spacing consistent across pages; compare each new page against the anchor and the previous page.
@@ -92,14 +98,20 @@ def explanatory_text_block(
 
 ## Delivery Report
 
-Save a JSON report with these fields per file:
+Ask before saving a multi-page JSON report. If the user approves a report, save these fields per file:
 
 ```json
 {
   "file": "svg_shape_safe/example.svg",
   "complexity": "medium",
+  "delivery": "individual_svg",
+  "zip_requested": false,
+  "report_requested": true,
   "icon_retention_decision": "balanced",
   "icon_strategy": "balanced",
+  "font_family": "Microsoft YaHei, Noto Sans SC, Arial, sans-serif",
+  "font_size_scale": [24, 18, 16, 14, 12, 10, 8],
+  "paragraph_text_box_policy": "one_semantic_paragraph_per_text_box",
   "visual_model_calls_budget": 1,
   "image": 0,
   "data_icon": 0,
