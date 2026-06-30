@@ -7,6 +7,8 @@ metadata:
 
 # Image To Shape-Safe SVG
 
+Deprecated for PowerPoint editable reconstruction: if the target is editable PowerPoint/PPTX, use `$image-to-pptx` instead. Do not rely on PowerPoint SVG-to-shapes conversion to recover native multi-line text boxes. This SVG skill remains only for users who explicitly request SVG output.
+
 Use this skill to reconstruct slide-like raster images into editable, Office-safe SVGs. The goal is not bitmap tracing. The goal is a structured SVG made from text, paths, lines, polygons, icons, and simple shapes that can later be edited or converted to shapes without losing content.
 
 Default aesthetic bias: reduce decorative icons. Use icons only when they clarify the content hierarchy. For secondary or repetitive items, prefer numbered circles, small dots, rounded pills, color chips, status badges, or simple button-like shapes with a restrained palette.

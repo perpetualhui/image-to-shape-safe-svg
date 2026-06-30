@@ -2,6 +2,8 @@
 
 Languages: [English](README.md) | [简体中文](README.zh-CN.md) | [日本語](README.ja.md)
 
+編集可能な PowerPoint/PPTX のネイティブテキストボックスが目的の場合は [`image-to-pptx`](../image-to-pptx/) を使用してください。PowerPoint の SVG から図形への変換で複数行テキストボックスを復元する前提は使いません。この skill は明示的に SVG 出力が必要な場合のみ残します。
+
 スライド画像、スクリーンショット、フローチャート、業務図、インフォグラフィックを、PowerPoint で「図形に変換」しやすい編集可能な SVG に再構成する Codex skill です。
 
 この skill はビットマップを単純にトレースするものではありません。テキスト、パス、線、多角形、アイコン、基本図形を使ってページ構造を再構築し、Office で編集しやすい SVG を作ることを目的とします。

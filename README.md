@@ -2,6 +2,8 @@
 
 Languages: [English](README.md) | [简体中文](README.zh-CN.md) | [日本語](README.ja.md)
 
+Deprecated for editable PowerPoint reconstruction: use [`image-to-pptx`](../image-to-pptx/) when the target is native editable PPTX text boxes. This skill remains for explicit SVG output only.
+
 Convert slide-like images, screenshots, flowcharts, business diagrams, and infographic pages into editable SVG files that are safer to convert into PowerPoint shapes.
 
 This is a Codex skill for reconstructing visual documents structurally. It does not trace a bitmap. Instead, it rebuilds the page with SVG primitives such as text, paths, lines, polygons, icons, and simple shapes so the output remains easier to edit in Office.

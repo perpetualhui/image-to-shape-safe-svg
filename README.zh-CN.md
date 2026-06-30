@@ -2,6 +2,8 @@
 
 语言：[English](README.md) | [简体中文](README.zh-CN.md) | [日本語](README.ja.md)
 
+如果目标是原生可编辑 PowerPoint/PPTX 文本框，请使用 [`image-to-pptx`](../image-to-pptx/)。不要再依赖 PowerPoint 的 SVG 转形状来恢复多行文本框。本 skill 只保留给明确要求 SVG 输出的场景。
+
 将幻灯片截图、流程图、业务图表、信息图和页面截图重建为更适合在 PowerPoint 中“转换为形状”的可编辑 SVG。
 
 这是一个 Codex skill。它的目标不是把位图描摹成一张复杂路径图，而是用文本、路径、线条、多边形、图标和简单形状重新搭建页面结构，让输出文件更容易在 Office 中编辑。
