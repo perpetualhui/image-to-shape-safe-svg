@@ -1,8 +1,6 @@
 ---
 name: image-to-shape-safe-svg
-description: Convert slide-like images, screenshots, flowcharts, business diagrams, or infographic PNG/JPG pages into Office/PPT shape-safe editable SVG. Use when the user wants image-to-SVG reconstruction, editable icons/arrows/text, batch conversion, web-compatible SVG output, or SVGs that survive PowerPoint "convert to shapes" without losing icons, arrows, or text layout.
-metadata:
-  short-description: Image to editable shape-safe SVG
+description: Convert slide-like images, screenshots, flowcharts, business diagrams, or infographic PNG/JPG pages into editable SVG only when the user explicitly requests SVG output. Do not use for editable PowerPoint/PPTX reconstruction; route image-to-PPT, native text boxes, editable PowerPoint shapes, or PPT365 work to $image-to-pptx.
 ---
 
 # Image To Shape-Safe SVG
